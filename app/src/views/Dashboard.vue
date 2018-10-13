@@ -15,13 +15,9 @@ export default {
     }
   },
   mounted () {
-    this.test()
-  },
-  methods: {
-    async test () {
-      const response = await expenseService.testFetch()
+    expenseService.testFetch().then(response => {
       this.testFromApi = response.data
-    }
+    })
   }
 }
 </script>
