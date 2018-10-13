@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 
+const Expense = require('./models/expense')
+
 const apiServer = express()
 apiServer.use(morgan('combined'))
 apiServer.use(bodyParser.json())
@@ -22,6 +24,27 @@ apiServer.get('/test', (request, response) => {
       test: "Yeah!"
     }]
   )
+})
+
+apiServer.post('/expense', (request, response) => {
+  const newExpense = new Expense({
+    title: request.body.title
+  })
+
+  newExpense.save(error => {
+    response.send({
+      success: error === null
+    })
+  })
+})
+
+apiServer.get('/expense', (request, response) => {
+  Expense.find({}, 'title', (error, expenses) => {
+    response.send({
+      success: error === null,
+      expenses
+    })
+  }).sort({_id: -1})
 })
 
 apiServer.listen(process.env.PORT || 8081)
